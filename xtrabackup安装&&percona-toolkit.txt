@@ -1,0 +1,29 @@
+最新版本需要安装 libev-4.15-1.el6.rf.x86_64.rpm
+
+1)下载libev-4.15-1.el6.rf.x86_64.rpm
+wget  ftp://rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/libev-4.15-1.el6.rf.x86_64.rpm
+wget  ftp://rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/libev-4.15-1.el6.rf.x86_64.rpm
+
+yum install libev-4.15-1.el6.rf.x86_64.rpm
+
+2)安装xtrabackup的YUM源
+yum install http://www.percona.com/downloads/percona-release/redhat/0.1-4/percona-release-0.1-4.noarch.rpm
+
+
+3)安装xtrabackup安装源
+yum install percona-xtrabackup-24* 
+
+sudo yum install percona-toolkit*
+
+----------------------------------------------------------------------------------
+
+依赖包：
+Installing : perl-Mozilla-CA-20130114-5.el7.noarch                                                                                                                                     1/7
+Installing : perl-Net-LibIDN-0.12-15.el7.x86_64                                                                                                                                        2/7
+Installing : perl-Net-SSLeay-1.55-6.el7.x86_64                                                                                                                                         3/7
+Installing : perl-IO-Socket-IP-0.21-5.el7.noarch                                                                                                                                       4/7
+Installing : perl-IO-Socket-SSL-1.94-7.el7.noarch                                                                                                                                      5/7
+Installing : perl-TermReadKey-2.30-20.el7.x86_64                                                                                                                                       6/7
+Installing : percona-toolkit-3.3.1-1.el7.x86_64
+----------------------------------------------------------------------------------
+
