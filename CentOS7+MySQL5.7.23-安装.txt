@@ -1,0 +1,43 @@
+Percona-Server-5.7.23-23-Linux.x86_64.ssl102.tar.gz---openssl-1.0.0
+Percona-Server-5.7.23-23-Linux.x86_64.ssl102.tar.gz---openssl-1.0.1e-48.el6_8.1.x86_64
+
+ssl100--openssl-1.0.0
+ssl101--openssl-1.0.1e
+---------------------------------------------------------------------------------------------------------------
+
+wget https://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz
+tar -zxvf readline-7.0.tar.gz 
+cd readline-7.0
+configure
+make
+make install
+
+
+
+sudo yum install -y epel-release
+sudo yum install -y glibc gcc gcc-c++ openssl-devel autoconf automake cmake bison make ncurses-devel numactl numactl-devel rsync libatomic
+sudo yum install -y libtool-ltdl-devel* zlib* libxml*
+sudo yum install -y libaio libaio-devel libmcrypt libmcrypt-devel mcrypt mhash
+sudo /usr/sbin/groupadd -g 601 mysql; sudo /usr/sbin/useradd -u 601 -g 601 -M -s /sbin/nologin -c MySql mysql
+sudo mkdir /etc/mysql
+sudo mkdir -p /home/mysql_data && sudo chown -R mysql.mysql /home/mysql_data
+mkdir -p /home/lilongqian/soft/db
+mkdir -p /home/lilongqian/soft/tools
+mkdir -p /home/lilongqian/soft/config
+#
+sudo sh -c \" cat >>/etc/sysctl.conf <<EOF
+#net.ipv4.tcp_syncookies = 1
+#net.ipv4.tcp_tw_reuse = 1
+#net.ipv4.tcp_tw_recycle = 1
+#net.ipv4.tcp_fin_timeout = 30
+#EOF\" "
+sudo sysctl -p"
+cd /usr/lib64
+
+sudo ln -s /usr/lib64/libssl.so.1.0.1e /usr/lib64/libssl.so.1.0.0
+sudo ln -s /usr/lib64/libssl.so /usr/lib64/libssl.so.6
+sudo ln -s /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.1.0.0
+sudo ln -s /usr/lib64/libcrypto.so /usr/lib64/libcrypto.so.6
+
+
+
