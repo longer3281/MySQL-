@@ -1,0 +1,25 @@
+并行复制配置
+要实现一个完美的crash-safe并行复制环境，需要根据如下参数进行配置，首先master服务器根据如下进行配置：
+
+[mysqld]
+server-id=xxx
+log-bin=xxx
+sync_binlog=1 #保证master crash safe，该参数必须设置为1
+innodb_support_xa=1 #保证master crash safe，该参数必须设置为1
+binlog_commit_wait_count=xxx #根据自身业务进行调整
+binlog_commit_wait_usec=xxx #根据自身业务进行调整
+enable_table_relay_info=1 #如果需要进行双主的配置
+
+
+slave服务器进行如下的配置：
+
+[mysqld]
+server-id = xxx
+log-bin = xxx
+enable_table_relay_info = 1
+slave_parallel_threads = 32 #并行复制的线程数
+relay_log_recovery = 1 #从机crash safe要求重新同步master日志
+
+------------------------------------------------------------------------
+
+
