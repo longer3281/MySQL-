@@ -1,0 +1,72 @@
+#!/usr/bin/expect -f
+
+set hname [lindex $argv 0]
+set timeout 1
+
+spawn ssh -p 22000 lilongqian@$hname
+expect {
+"yes/no" {send "yes\r" }
+"password" {send "ok\r"; }
+}
+
+expect "$"
+
+send "sudo yum install -y epel-release\r"
+send "sudo yum install -y glibc gcc gcc-c++ openssl-devel autoconf automake cmake bison make ncurses-devel numactl numactl-devel\r"
+send "sudo yum install -y libtool-ltdl-devel* zlib* libxml*\r"
+send "sudo yum install -y libaio libaio-devel libmcrypt libmcrypt-devel mcrypt mhash\r"
+send "sudo /usr/sbin/groupadd -g 601 mysql; sudo /usr/sbin/useradd -u 601 -g 601 -M -s /sbin/nologin -c MySql mysql\r"
+send "sudo mkdir /home/mysql_data\r"
+send "sudo mkdir -p /home/mysql_data && sudo chown -R mysql.mysql /home/mysql_data\r"
+send "mkdir -p /home/lilongqian/soft/db\r"
+send "mkdir -p /home/lilongqian/soft/tools\r"
+send "mkdir -p /etc/mysql\r"
+
+
+send "sudo sh -c \" cat >>/etc/sysctl.conf <<EOF
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_fin_timeout = 30
+EOF\" "
+
+send "cd /usr/lib64\r"
+send "sudo ln -s /usr/lib64/libssl.so.1.0.1e /usr/lib64/libssl.so.1.0.0\r"
+send "sudo ln -s /usr/lib64/libssl.so /usr/lib64/libssl.so.6\r"
+send "sudo ln -s /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.1.0.0\r"
+send "sudo ln -s /usr/lib64/libcrypto.so /usr/lib64/libcrypto.so.6\r"
+send "exit\r"
+interact eof
+
+spawn scp -P22000 /home/lilongqian/upload/mysql/Percona-Server-5.7.22-22-Linux.x86_64.ssl101.tar.gz lilongqian@$hname:/home/lilongqian/soft/db
+expect {
+"yes/no" {send "yes\r" }
+"password" {send "ok\r"; }
+}
+interact eof
+
+spawn ssh -p 22000 lilongqian@$hname
+expect {
+"yes/no" {send "yes\r" }
+"password" {send "ok\r"; }
+}
+expect "$"
+
+send "sudo tar -zxvf /home/lilongqian/soft/db/Percona-Server-5.7.22-22-Linux.x86_64.ssl101.tar.gz -C /usr/local/\r"
+send "sudo mv /usr/local/Percona-Server-5.7.22-22-Linux.x86_64.ssl101 /usr/local/mysql\r"
+send "cd /usr/local/mysql/bin\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' msql2mysql\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' mysqlaccess\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' mysql_config\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' mysqld_multi\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' mysqld_safe\r"
+send "sudo cp -a /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld\r"
+send "sudo sed -i 's/Percona-Server-5.7.22-22-Linux.x86_64.ssl101/mysql/g' /etc/init.d/mysqld\r"
+send "sudo sh -c \"echo '/usr/local/mysql/lib' >> /etc/ld.so.conf\" \r"
+send "sudo ldconfig\r"
+send "sudo /usr/local/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/home/mysql_data \r"
+send "sudo mkdir -p /var/run/mysqld && sudo chown -R mysql.mysql /var/run/mysqld \r"
+#send "sudo service mysqld start\r"
+
+send "exit\r"
+interact eof
